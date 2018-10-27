@@ -2,8 +2,6 @@ package ru.ifmo.rain.kokorin.parser
 
 import ru.ifmo.rain.kokorin.lexer.Token
 
-import scala.annotation.tailrec
-
 sealed class Tree(val description: String, val children: List[Tree]) {
   val symbol: String = this.getClass.getSimpleName
 
@@ -20,60 +18,6 @@ sealed class Tree(val description: String, val children: List[Tree]) {
     val builder = StringBuilder.newBuilder
     toStringHelper(builder)
     builder.toString()
-  }
-}
-
-object Tree {
-  private[parser] def compareChildren(aChildren: List[Tree], bChildren: List[Tree]): Boolean = {
-    (aChildren, bChildren) match {
-      case (Nil, Nil) => true
-
-      case (aFirst :: aTail, bFirst :: bTail) =>
-        val first = treesEqual(aFirst, bFirst)
-        val second = compareChildren(aTail, bTail)
-        first && second
-
-      case _ => false
-    }
-  }
-
-  def treesEqual(a: Tree, b: Tree): Boolean = {
-    (a, b) match {
-      case (S(thisChildren), S(objChildred)) =>
-        val res = compareChildren(thisChildren, objChildred)
-        res
-
-      case (T(thisChildren), T(objChildred)) =>
-        val res = compareChildren(thisChildren, objChildred)
-        res
-
-      case (TPrime(thisEmpty, thisChildren), TPrime(otherEmpty, objChildred)) =>
-        val first = thisEmpty == otherEmpty
-        val second = compareChildren(thisChildren, objChildred)
-        first && second
-
-
-      case (A(thisEmpty, thisChildren), A(otherEmpty, objChildred)) =>
-        val first = thisEmpty == otherEmpty
-        val second = compareChildren(thisChildren, objChildred)
-        first && second
-
-
-      case (APrime(thisEmpty, thisChildren), APrime(otherEmpty, objChildred)) =>
-        val first = thisEmpty == otherEmpty
-        val second = compareChildren(thisChildren, objChildred)
-         first && second
-
-      case (B(thisChildren), B(objChildred)) =>
-        val res = compareChildren(thisChildren, objChildred)
-        res
-
-      case (NTerm(thisToken), NTerm(otherToken)) =>
-        val res = Token.tokensEqual(thisToken, otherToken)
-        res
-
-      case _ => false
-    }
   }
 }
 
