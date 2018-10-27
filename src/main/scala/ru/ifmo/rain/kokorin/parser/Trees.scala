@@ -1,5 +1,6 @@
 package ru.ifmo.rain.kokorin.parser
 
+import play.api.libs.json.{JsArray, JsNumber, JsObject, JsString}
 import ru.ifmo.rain.kokorin.lexer.Token
 
 sealed class Tree(val description: String, val children: List[Tree]) {
@@ -19,6 +20,36 @@ sealed class Tree(val description: String, val children: List[Tree]) {
     toStringHelper(builder)
     builder.toString()
   }
+
+  def toJson: JsObject = {
+    this match {
+      case NTerm(token) =>
+        JsObject(
+          Map(
+            "type" -> JsString("token holder"),
+            "token" -> JsString(token.toString)
+          )
+        )
+
+      case _ =>
+        val childrenDescription = children.map { curChild =>
+          curChild.toJson
+        }.zipWithIndex.map { case (json, index) =>
+            JsObject(
+              Map(
+                "description" -> json,
+                "index" -> JsNumber(index)
+              )
+            )
+        }
+        JsObject(
+          Map(
+            "description" -> JsString(description),
+            "children" -> JsArray(childrenDescription)
+          )
+        )
+    }
+  }
 }
 
 case class S(override val children: List[Tree]) extends Tree("Function declaration", children)
@@ -28,11 +59,30 @@ case class T(override val children: List[Tree]) extends Tree(s"Base part of type
 case class TPrime(empty: Boolean, override val children: List[Tree])
   extends Tree(if (empty) "Empty tail of *-part of type" else "Tail of *-part of type", children)
 
+object TPrime {
+  def apply(): TPrime = TPrime(empty = true, Nil)
+
+  def apply(children: List[Tree]): TPrime = TPrime(children.isEmpty, children)
+}
+
 case class A(empty: Boolean, override val children: List[Tree])
   extends Tree(if (empty) "Empty arguments list" else "Arguments list", children)
 
+object A {
+  def apply(): A = A(empty = true, Nil)
+
+  def apply(children: List[Tree]): A = A(children.isEmpty, children)
+}
+
 case class APrime(empty: Boolean, override val children: List[Tree])
   extends Tree(if (empty) "Empty tail of arguments list" else "Tail of arguments list", children)
+
+object APrime {
+  def apply(): APrime = APrime(empty = true, Nil)
+
+  def apply(children: List[Tree]): APrime = APrime(children.isEmpty, children)
+}
+
 
 case class B(override val children: List[Tree]) extends Tree("Single argument", children)
 

@@ -65,12 +65,12 @@ class Parser (val lexer: Lexer) extends AutoCloseable {
   private def parseTPrime(): TPrime = {
     curToken match {
       case Word(_) =>
-        TPrime(empty = true, Nil)
+        TPrime()
 
       case Asterisk =>
         curToken = lexer.getNextToken()
         val tPrime = parseTPrime()
-        TPrime(empty = false, Asterisk.toTree :: tPrime :: Nil)
+        TPrime(Asterisk.toTree :: tPrime :: Nil)
 
       case y => throw new ParseException(s"Parsing T', expecting {Word | *}, got $y")
     }
@@ -79,12 +79,12 @@ class Parser (val lexer: Lexer) extends AutoCloseable {
   private def parseA(): A = {
     curToken match {
       case RightParent =>
-        A(empty = true, Nil)
+        A()
 
       case Word(_) =>
         val b = parseB()
         val aPrime = parseAPrime()
-        A(empty = false, b :: aPrime :: Nil)
+        A(b :: aPrime :: Nil)
 
       case y => throw new ParseException(s"Parsing A, expecting {Word | )}, got $y")
     }
@@ -95,10 +95,10 @@ class Parser (val lexer: Lexer) extends AutoCloseable {
       case Comma =>
         curToken = lexer.getNextToken()
         val a = parseA()
-        APrime(empty = false, Comma.toTree :: a :: Nil)
+        APrime(Comma.toTree :: a :: Nil)
 
       case RightParent =>
-        APrime(empty = true, Nil)
+        APrime()
 
       case y => throw new ParseException(s"Parsing A', expecting {, | )}, got $y")
     }

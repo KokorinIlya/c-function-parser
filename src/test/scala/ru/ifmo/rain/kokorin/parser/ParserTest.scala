@@ -11,10 +11,10 @@ class ParserTest extends FlatSpec {
     val tree = Parser.parse(parsedString)
     val expectedResult = S(
       T(
-        NTerm(Word("int")) :: TPrime(empty = true, Nil) :: Nil
+        NTerm(Word("int")) :: TPrime() :: Nil
       ) :: NTerm(Word("f"))
         :: NTerm(LeftParent)
-        :: A(empty = true, Nil)
+        :: A()
         :: NTerm(RightParent)
         :: NTerm(Semi)
         :: Nil
@@ -29,15 +29,13 @@ class ParserTest extends FlatSpec {
       T(
         NTerm(Word("int"))
           :: TPrime(
-          empty = false,
           NTerm(Asterisk) :: TPrime (
-            empty = false,
-            NTerm(Asterisk) :: TPrime(empty = true, Nil) :: Nil
+            NTerm(Asterisk) :: TPrime() :: Nil
           ) :: Nil
         ) :: Nil
       ) :: NTerm(Word("f"))
         :: NTerm(LeftParent)
-        :: A(empty = true, Nil)
+        :: A()
         :: NTerm(RightParent)
         :: NTerm(Semi)
         :: Nil
@@ -54,16 +52,15 @@ class ParserTest extends FlatSpec {
     val parsedString = new StringReader("int f(int a);")
     val tree = Parser.parse(parsedString)
     val argsList = A(
-      empty = false,
       B(
         T(
-          NTerm(Word("int")) :: TPrime(empty = true, Nil) :: Nil
+          NTerm(Word("int")) :: TPrime() :: Nil
         ) :: NTerm(Word("a")) :: Nil
-      ) :: APrime(empty = true, Nil) :: Nil
+      ) :: APrime() :: Nil
     )
     val expectedResult = S(
       T(
-        NTerm(Word("int")) :: TPrime(empty = true, Nil) :: Nil
+        NTerm(Word("int")) :: TPrime() :: Nil
       ) :: NTerm(Word("f"))
         :: NTerm(LeftParent)
         :: argsList
@@ -79,28 +76,25 @@ class ParserTest extends FlatSpec {
     val tree = Parser.parse(parsedString)
 
     val argsListTail = APrime(
-      empty = false,
       NTerm(Comma) :: A(
-        empty = false,
         B(
           T(
-            NTerm(Word("float")) :: TPrime(empty = true, Nil) :: Nil
+            NTerm(Word("float")) :: TPrime() :: Nil
           ) :: NTerm(Word("b")) :: Nil
-        ) :: APrime(empty = true, Nil) :: Nil
+        ) :: APrime() :: Nil
       ) :: Nil
     )
 
     val argsList = A(
-      empty = false,
       B(
         T(
-          NTerm(Word("int")) :: TPrime(empty = true, Nil) :: Nil
+          NTerm(Word("int")) :: TPrime() :: Nil
         ) :: NTerm(Word("a")) :: Nil
       ) :: argsListTail :: Nil
     )
     val expectedResult = S(
       T(
-        NTerm(Word("int")) :: TPrime(empty = true, Nil) :: Nil
+        NTerm(Word("int")) :: TPrime() :: Nil
       ) :: NTerm(Word("f"))
         :: NTerm(LeftParent)
         :: argsList
@@ -117,28 +111,25 @@ class ParserTest extends FlatSpec {
     val tree = Parser.parse(parsedString)
 
     val argsListTail = APrime(
-      empty = false,
       NTerm(Comma) :: A(
-        empty = false,
         B(
           T(
-            NTerm(Word("float")) :: TPrime(empty = true, Nil) :: Nil
+            NTerm(Word("float")) :: TPrime() :: Nil
           ) :: NTerm(Word("b")) :: Nil
-        ) :: APrime(empty = true, Nil) :: Nil
+        ) :: APrime() :: Nil
       ) :: Nil
     )
 
     val argsList = A(
-      empty = false,
       B(
         T(
-          NTerm(Word("int")) :: TPrime(empty = true, Nil) :: Nil
+          NTerm(Word("int")) :: TPrime() :: Nil
         ) :: NTerm(Word("a")) :: Nil
       ) :: argsListTail :: Nil
     )
     val expectedResult = S(
       T(
-        NTerm(Word("int")) :: TPrime(empty = true, Nil) :: Nil
+        NTerm(Word("int")) :: TPrime() :: Nil
       ) :: NTerm(Word("f"))
         :: NTerm(LeftParent)
         :: argsList
