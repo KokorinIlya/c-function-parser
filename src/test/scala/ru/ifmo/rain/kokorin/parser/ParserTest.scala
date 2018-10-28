@@ -140,4 +140,11 @@ class ParserTest extends FlatSpec {
 
     assert(tree != expectedResult)
   }
+
+  it should "make correct string representation" in {
+    val string = "double*** f(int** a, float** b, double***** c);"
+    val parsedString = new StringReader(string)
+    val tree = Parser.parse(parsedString)
+    assert(tree.toString == string)
+  }
 }

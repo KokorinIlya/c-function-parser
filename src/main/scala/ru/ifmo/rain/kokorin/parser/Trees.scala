@@ -1,24 +1,56 @@
 package ru.ifmo.rain.kokorin.parser
 
 import play.api.libs.json.{JsArray, JsNumber, JsObject, JsString}
-import ru.ifmo.rain.kokorin.lexer.Token
+import ru.ifmo.rain.kokorin.lexer.{Asterisk, Comma, Token, Word}
+
+import scala.collection.mutable.ArrayBuffer
 
 sealed class Tree(val description: String, val children: List[Tree]) {
   val symbol: String = this.getClass.getSimpleName
 
-  private def toStringHelper(builder: StringBuilder){
+  private def toTreeHelper(builder: StringBuilder){
     builder.append(s"[$description] of type [$symbol]\n")
     for {(child, number) <- children.zipWithIndex} {
       builder.append(s"Child number $number began\n")
-      child.toStringHelper(builder)
+      child.toTreeHelper(builder)
       builder.append(s"Child number $number ended\n")
     }
   }
 
-  override def toString: String = {
+  def toTree: String = {
     val builder = StringBuilder.newBuilder
-    toStringHelper(builder)
+    toTreeHelper(builder)
     builder.toString()
+  }
+
+  private def toStringHelper(buffer: ArrayBuffer[Token]): Unit = {
+    this match {
+      case NTerm(token) =>
+        buffer.append(token)
+
+      case _ =>
+        for {child <- children} {
+          child.toStringHelper(buffer)
+        }
+    }
+  }
+
+  override def toString: String = {
+    val buffer = ArrayBuffer[Token]()
+    toStringHelper(buffer)
+    val tokens = buffer.toArray
+    val builder = StringBuilder.newBuilder
+    for {index <- 0 until (tokens.length - 1)} {
+      val curToken = tokens(index)
+      val nextToken = tokens(index + 1)
+      builder.append(curToken.toString)
+      if ((curToken == Asterisk && nextToken != Asterisk)
+        || (curToken.isInstanceOf[Word] && nextToken.isInstanceOf[Word])
+        || curToken == Comma) {
+        builder.append(" ")
+      }
+    }
+    builder.append(";").toString()
   }
 
   def toJson: JsObject = {
