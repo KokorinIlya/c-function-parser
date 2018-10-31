@@ -11,12 +11,12 @@ class ParserTest extends FlatSpec {
     val tree = Parser.parse(parsedString)
     val expectedResult = S(
       T(
-        NTerm(Word("int")) :: TPrime() :: Nil
-      ) :: NTerm(Word("f"))
-        :: NTerm(LeftParent)
+        TokenHolder(Word("int")) :: TPrime() :: Nil
+      ) :: TokenHolder(Word("f"))
+        :: TokenHolder(LeftParent)
         :: A()
-        :: NTerm(RightParent)
-        :: NTerm(Semi)
+        :: TokenHolder(RightParent)
+        :: TokenHolder(Semi)
         :: Nil
     )
     assert(tree == expectedResult)
@@ -27,17 +27,17 @@ class ParserTest extends FlatSpec {
     val tree = Parser.parse(parsedString)
     val expectedResult = S(
       T(
-        NTerm(Word("int"))
+        TokenHolder(Word("int"))
           :: TPrime(
-          NTerm(Asterisk) :: TPrime (
-            NTerm(Asterisk) :: TPrime() :: Nil
+          TokenHolder(Asterisk) :: TPrime (
+            TokenHolder(Asterisk) :: TPrime() :: Nil
           ) :: Nil
         ) :: Nil
-      ) :: NTerm(Word("f"))
-        :: NTerm(LeftParent)
+      ) :: TokenHolder(Word("f"))
+        :: TokenHolder(LeftParent)
         :: A()
-        :: NTerm(RightParent)
-        :: NTerm(Semi)
+        :: TokenHolder(RightParent)
+        :: TokenHolder(Semi)
         :: Nil
     )
     assert(tree == expectedResult)
@@ -54,18 +54,18 @@ class ParserTest extends FlatSpec {
     val argsList = A(
       B(
         T(
-          NTerm(Word("int")) :: TPrime() :: Nil
-        ) :: NTerm(Word("a")) :: Nil
+          TokenHolder(Word("int")) :: TPrime() :: Nil
+        ) :: TokenHolder(Word("a")) :: Nil
       ) :: APrime() :: Nil
     )
     val expectedResult = S(
       T(
-        NTerm(Word("int")) :: TPrime() :: Nil
-      ) :: NTerm(Word("f"))
-        :: NTerm(LeftParent)
+        TokenHolder(Word("int")) :: TPrime() :: Nil
+      ) :: TokenHolder(Word("f"))
+        :: TokenHolder(LeftParent)
         :: argsList
-        :: NTerm(RightParent)
-        :: NTerm(Semi)
+        :: TokenHolder(RightParent)
+        :: TokenHolder(Semi)
         :: Nil
     )
     assert(tree == expectedResult)
@@ -76,11 +76,11 @@ class ParserTest extends FlatSpec {
     val tree = Parser.parse(parsedString)
 
     val argsListTail = APrime(
-      NTerm(Comma) :: A(
+      TokenHolder(Comma) :: A(
         B(
           T(
-            NTerm(Word("float")) :: TPrime() :: Nil
-          ) :: NTerm(Word("b")) :: Nil
+            TokenHolder(Word("float")) :: TPrime() :: Nil
+          ) :: TokenHolder(Word("b")) :: Nil
         ) :: APrime() :: Nil
       ) :: Nil
     )
@@ -88,18 +88,18 @@ class ParserTest extends FlatSpec {
     val argsList = A(
       B(
         T(
-          NTerm(Word("int")) :: TPrime() :: Nil
-        ) :: NTerm(Word("a")) :: Nil
+          TokenHolder(Word("int")) :: TPrime() :: Nil
+        ) :: TokenHolder(Word("a")) :: Nil
       ) :: argsListTail :: Nil
     )
     val expectedResult = S(
       T(
-        NTerm(Word("int")) :: TPrime() :: Nil
-      ) :: NTerm(Word("f"))
-        :: NTerm(LeftParent)
+        TokenHolder(Word("int")) :: TPrime() :: Nil
+      ) :: TokenHolder(Word("f"))
+        :: TokenHolder(LeftParent)
         :: argsList
-        :: NTerm(RightParent)
-        :: NTerm(Semi)
+        :: TokenHolder(RightParent)
+        :: TokenHolder(Semi)
         :: Nil
     )
 
@@ -111,11 +111,11 @@ class ParserTest extends FlatSpec {
     val tree = Parser.parse(parsedString)
 
     val argsListTail = APrime(
-      NTerm(Comma) :: A(
+      TokenHolder(Comma) :: A(
         B(
           T(
-            NTerm(Word("float")) :: TPrime() :: Nil
-          ) :: NTerm(Word("b")) :: Nil
+            TokenHolder(Word("float")) :: TPrime() :: Nil
+          ) :: TokenHolder(Word("b")) :: Nil
         ) :: APrime() :: Nil
       ) :: Nil
     )
@@ -123,18 +123,18 @@ class ParserTest extends FlatSpec {
     val argsList = A(
       B(
         T(
-          NTerm(Word("int")) :: TPrime() :: Nil
-        ) :: NTerm(Word("a")) :: Nil
+          TokenHolder(Word("int")) :: TPrime() :: Nil
+        ) :: TokenHolder(Word("a")) :: Nil
       ) :: argsListTail :: Nil
     )
     val expectedResult = S(
       T(
-        NTerm(Word("int")) :: TPrime() :: Nil
-      ) :: NTerm(Word("f"))
-        :: NTerm(LeftParent)
+        TokenHolder(Word("int")) :: TPrime() :: Nil
+      ) :: TokenHolder(Word("f"))
+        :: TokenHolder(LeftParent)
         :: argsList
-        :: NTerm(RightParent)
-        :: NTerm(Semi)
+        :: TokenHolder(RightParent)
+        :: TokenHolder(Semi)
         :: Nil
     )
 

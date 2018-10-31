@@ -1,9 +1,9 @@
 package ru.ifmo.rain.kokorin.lexer
 
-import ru.ifmo.rain.kokorin.parser.NTerm
+import ru.ifmo.rain.kokorin.parser.TokenHolder
 
 sealed trait Token {
-  def toTree: NTerm = NTerm(this)
+  def toTree: TokenHolder = TokenHolder(this)
 }
 
 object Asterisk extends Token {

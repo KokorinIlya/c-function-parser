@@ -25,7 +25,7 @@ sealed class Tree(val description: String, val children: List[Tree]) {
 
   private def toStringHelper(buffer: ArrayBuffer[Token]): Unit = {
     this match {
-      case NTerm(token) =>
+      case TokenHolder(token) =>
         buffer.append(token)
 
       case _ =>
@@ -54,33 +54,20 @@ sealed class Tree(val description: String, val children: List[Tree]) {
   }
 
   def toJson: JsObject = {
-    this match {
-      case NTerm(token) =>
-        JsObject(
-          Map(
-            "type" -> JsString("token holder"),
-            "token" -> JsString(token.toString)
-          )
+    val innerMap = this match {
+      case TokenHolder(token) =>
+        Map(
+          "description" -> JsString("token holder"),
+          "token" -> JsString(token.toString)
         )
 
       case _ =>
-        val childrenDescription = children.map { curChild =>
-          curChild.toJson
-        }.zipWithIndex.map { case (json, index) =>
-            JsObject(
-              Map(
-                "description" -> json,
-                "index" -> JsNumber(index)
-              )
-            )
-        }
-        JsObject(
-          Map(
-            "description" -> JsString(description),
-            "children" -> JsArray(childrenDescription)
-          )
+        Map(
+          "description" -> JsString(description),
+          "children" -> JsArray(children.map(_.toJson))
         )
     }
+    JsObject(innerMap)
   }
 }
 
@@ -118,4 +105,4 @@ object APrime {
 
 case class B(override val children: List[Tree]) extends Tree("Single argument", children)
 
-case class NTerm(token: Token) extends Tree(token.toString, Nil)
+case class TokenHolder(token: Token) extends Tree(token.toString, Nil)
